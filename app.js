@@ -1,7 +1,8 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
 const app = express();
-
-app.listen(3000,()=>{
-console.log('Ok')
-})
+mongoose.connect('mongodb://localhost:27017/mestodb');
+app.listen(3000, () => {
+  console.log('Ok');
+});
