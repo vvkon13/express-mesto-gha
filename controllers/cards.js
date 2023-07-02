@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const { User } = require('../models/user');
 const {
-  ERROR_CODE_VALIDATION, ERROR_CODE_DEFAULT, ERROR_DEFAULT_MESSAGE,
+  ERROR_CODE_VALIDATION, ERROR_CODE_DEFAULT, ERROR_DEFAULT_MESSAGE, ERROR_CODE_NOT_FOUND,
 } = require('../utils/constants');
 
 const getCards = (req, res, next) => {
@@ -21,9 +21,7 @@ const createCard = (req, res, next) => {
         name, link, owner, likes,
       })
         .then((card) => res.send(card))
-        .catch((err) => {
-          res.status(400).send(err);
-        });
+        .catch((err) => next(err));
     })
     .catch((err) => next(err));
 };
@@ -31,21 +29,53 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndDelete(cardId)
-    .then((card) => res.send(card))
+    .then((card) => {
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+      }
+    })
     .catch((err) => next(err));
 };
 
 const likeCard = (req, res, next) => {
-  console.log(req.params.cardId);
-  console.log(req.user._id);
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
-    .then((card) => res.send(card))
+  User.findById(req.user._id)
+    .then((user) => {
+      Card.findByIdAndUpdate(
+        req.params.cardId,
+        { $addToSet: { likes: user } },
+        { new: true, runValidators: true },
+      )
+        .then((card) => {
+          if (card) {
+            res.send(card);
+          } else {
+            res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+          }
+        })
+        .catch((err) => next(err));
+    })
     .catch((err) => next(err));
 };
 
 const dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
-    .then((card) => res.send(card))
+  User.findById(req.user._id)
+    .then((user) => {
+      Card.findByIdAndUpdate(
+        req.params.cardId,
+        { $pull: { likes: user } },
+        { new: true, runValidators: true },
+      )
+        .then((card) => {
+          if (card) {
+            res.send(card);
+          } else {
+            res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+          }
+        })
+        .catch((err) => next(err));
+    })
     .catch((err) => next(err));
 };
 

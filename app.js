@@ -15,8 +15,8 @@ app.use((req, res, next) => {
   };
   next();
 });
-app.use('/cards', cardsRoutes);
 app.use('/users', usersRoutes);
+app.use('/cards', cardsRoutes);
 app.use('/users', errorHandlerUsers);
 app.use('/cards', errorHandlerCards);
 
