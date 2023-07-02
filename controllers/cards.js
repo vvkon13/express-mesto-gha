@@ -67,14 +67,14 @@ const dislikeCard = (req, res, next) => {
         { $pull: { likes: user } },
         { new: true, runValidators: true },
       )
-        .then((card) => {
-          if (card) {
-            res.send(card);
-          } else {
+        .then((card) => res.send(card))
+        .catch((err) => {
+          if (err.name === 'CastError') {
             res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+          } else {
+            next(err);
           }
-        })
-        .catch((err) => next(err));
+        });
     })
     .catch((err) => next(err));
 };
@@ -85,7 +85,7 @@ const errorHandlerCards = (err, req, res, next) => {
   } else {
     switch (err.name) {
       case 'CastError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найден.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найдена.' });
         break;
       case 'SyntaxError':
         console.log('hi');
