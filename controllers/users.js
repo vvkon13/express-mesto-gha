@@ -37,17 +37,14 @@ const patchUser = (req, res, next) => {
 };
 
 const errorHandlerUsers = (err, req, res, next) => {
-  console.log(err.name);
   if (res.headersSent) {
     next(err);
   } else {
     switch (err.name) {
       case 'CastError':
-        console.log('hi');
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Пользователь с указанным ID не найден.' });
         break;
       case 'SyntaxError':
-        console.log('hi');
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтаксическая ошибка в запросе.' });
         break;
       case 'ValidationError':

@@ -19,12 +19,10 @@ app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 app.use('/users', errorHandlerUsers);
 app.use('/cards', errorHandlerCards);
-app.use('/*', (err, req, res, next) => {
-  res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Путь пока не существует' });
-  next(err);
+app.use((req, res) => {
+  res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Путь не существует' });
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.listen(PORT, () => {
-  console.log('Ok');
 });

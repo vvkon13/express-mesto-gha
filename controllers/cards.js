@@ -40,43 +40,39 @@ const deleteCard = (req, res, next) => {
 };
 
 const likeCard = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      Card.findByIdAndUpdate(
-        req.params.cardId,
-        { $addToSet: { likes: user } },
-        { new: true, runValidators: true },
-      )
-        .then((card) => {
-          if (card) {
-            res.send(card);
-          } else {
-            res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
-          }
-        })
-        .catch((err) => next(err));
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
+    .then((card) => {
+      if (card) {
+        res.status(ERROR_CODE_VALIDATION).send(card);
+      } else {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+      }
     })
     .catch((err) => next(err));
 };
 
 const dislikeCard = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      Card.findByIdAndUpdate(
-        req.params.cardId,
-        { $pull: { likes: user } },
-        { new: true, runValidators: true },
-      )
-        .then((card) => res.send(card))
-        .catch((err) => {
-          if (err.name === 'CastError') {
-            res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
-          } else {
-            next(err);
-          }
-        });
-    })
-    .catch((err) => next(err));
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
+    .then((card) => res.send(card))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        if (err.valueType === 'number') {
+          res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найдена.' });
+        } else {
+          res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найдена.' });
+        }
+      } else {
+        next(err);
+      }
+    });
 };
 
 const errorHandlerCards = (err, req, res, next) => {
@@ -88,7 +84,6 @@ const errorHandlerCards = (err, req, res, next) => {
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найдена.' });
         break;
       case 'SyntaxError':
-        console.log('hi');
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтаксическая ошибка в запросе.' });
         break;
       case 'ValidationError':
