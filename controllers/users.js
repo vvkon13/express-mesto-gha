@@ -31,7 +31,7 @@ const getUser = (req, res, next) => {
 };
 
 const patchUser = (req, res, next) => {
-  User.findByIdAndUpdate(req.user._id, req.body, { new: true })
+  User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
     .then((user) => res.send(user))
     .catch((err) => next(err));
 };
@@ -48,10 +48,10 @@ const errorHandlerUsers = (err, req, res, next) => {
         break;
       case 'SyntaxError':
         console.log('hi');
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Пользователь с указанным ID не найден.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтакксическая ошибка в запросе' });
         break;
       case 'ValidationError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Переданы некорректные данные пользователя.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Даные пользователя не прошли валидацию.' });
         break;
       default:
         res.status(ERROR_CODE_DEFAULT).send(ERROR_DEFAULT_MESSAGE);
