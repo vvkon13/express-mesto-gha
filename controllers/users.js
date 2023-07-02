@@ -44,7 +44,7 @@ const errorHandlerUsers = (err, req, res, next) => {
     switch (err.name) {
       case 'CastError':
         console.log('hi');
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь с указанным ID не найден.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Пользователь с указанным ID не найден.' });
         break;
       case 'SyntaxError':
         console.log('hi');
