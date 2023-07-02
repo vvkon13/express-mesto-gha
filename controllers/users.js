@@ -46,6 +46,10 @@ const errorHandlerUsers = (err, req, res, next) => {
         console.log('hi');
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь с указанным ID не найден.' });
         break;
+      case 'SyntaxError':
+        console.log('hi');
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Пользователь с указанным ID не найден.' });
+        break;
       case 'ValidationError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Переданы некорректные данные пользователя.' });
         break;
