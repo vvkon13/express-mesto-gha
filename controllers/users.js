@@ -48,7 +48,7 @@ const errorHandlerUsers = (err, req, res, next) => {
         break;
       case 'SyntaxError':
         console.log('hi');
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтакксическая ошибка в запросе' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтаксическая ошибка в запросе.' });
         break;
       case 'ValidationError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Даные пользователя не прошли валидацию.' });

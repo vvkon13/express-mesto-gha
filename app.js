@@ -19,14 +19,7 @@ app.use('/cards', cardsRoutes);
 app.use('/users', usersRoutes);
 app.use('/users', errorHandlerUsers);
 app.use('/cards', errorHandlerCards);
-/* app.use('/users', (err, res, req, next) => {
-  if (res.headersSent) {
-    next(err);
-  } else {
-    res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Путь не найден' });
-  }
-});
- */
+
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.listen(PORT, () => {
   console.log('Ok');

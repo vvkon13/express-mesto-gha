@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const { User } = require('../models/user');
 const {
-  ERROR_CODE_VALIDATION, ERROR_CODE_DEFAULT, ERROR_CODE_NOT_FOUND, ERROR_DEFAULT_MESSAGE,
+  ERROR_CODE_VALIDATION, ERROR_CODE_DEFAULT, ERROR_DEFAULT_MESSAGE,
 } = require('../utils/constants');
 
 const getCards = (req, res, next) => {
@@ -55,10 +55,14 @@ const errorHandlerCards = (err, req, res, next) => {
   } else {
     switch (err.name) {
       case 'CastError':
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найден.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найден.' });
+        break;
+      case 'SyntaxError':
+        console.log('hi');
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтаксическая ошибка в запросе.' });
         break;
       case 'ValidationError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Переданы некорректные данные карточки.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Данные карточки не прошли валидацию.' });
         break;
       default:
         res.status(ERROR_CODE_DEFAULT).send(ERROR_DEFAULT_MESSAGE);
