@@ -8,13 +8,13 @@ const getUsers = (req, res, next) => {
     .then((users) => {
       res.send(users);
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
   User.create(req.body)
     .then((user) => res.send(user))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const getUser = (req, res, next) => {
@@ -27,13 +27,13 @@ const getUser = (req, res, next) => {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанном ID не найден.' });
       }
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const patchUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
     .then((user) => res.send(user))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const errorHandlerUsers = (err, req, res, next) => {
@@ -42,7 +42,7 @@ const errorHandlerUsers = (err, req, res, next) => {
   } else {
     switch (err.name) {
       case 'CastError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Пользователь с указанным ID не найден.' });
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Переданы некорректные данные пользователя.' });
         break;
       case 'ValidationError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Даные пользователя не прошли валидацию.' });
