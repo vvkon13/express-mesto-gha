@@ -44,9 +44,6 @@ const errorHandlerUsers = (err, req, res, next) => {
       case 'CastError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Пользователь с указанным ID не найден.' });
         break;
-      case 'SyntaxError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтаксическая ошибка в запросе.' });
-        break;
       case 'ValidationError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Даные пользователя не прошли валидацию.' });
         break;

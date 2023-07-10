@@ -89,9 +89,6 @@ const errorHandlerCards = (err, req, res, next) => {
       case 'CastError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Карточка с указанным ID не найдена.' });
         break;
-      case 'SyntaxError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Синтаксическая ошибка в запросе.' });
-        break;
       case 'ValidationError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Данные карточки не прошли валидацию.' });
         break;
