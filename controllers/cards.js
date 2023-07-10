@@ -47,7 +47,7 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        res.status(ERROR_CODE_VALIDATION).send(card);
+        res.send(card);
       } else {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
       }
@@ -61,7 +61,13 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true, runValidators: true },
   )
-    .then((card) => res.send(card))
+    .then((card) => {
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         if (err.valueType === 'number') {
