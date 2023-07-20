@@ -22,7 +22,8 @@ const login = (req, res, next) => {
     })
     .then((isValidPassword) => {
       if (!isValidPassword) return res.status(ERROR_CODE_INCORRECT_EMAIL_PASSWORD).send({ message: 'Неправильные почта или пароль' });
-      return res.status(200).send(jwt.sign({ _id }, JWT_SECRET, { expiresIn: '7d' }));
+      const token = jwt.sign({ _id }, JWT_SECRET, { expiresIn: '7d' });
+      return res.status(200).send({ jwt: token });
     })
     .catch(next);
   return undefined;
@@ -43,10 +44,8 @@ const createUser = (req, res, next) => {
       .then((hash) => {
         req.body.password = hash;
         User.create(req.body)
-          .then((user) => res.send(user))
-          .catch((err) => {
-            next(err);
-          });
+          .then((user) => res.send({ ...user._doc, password: undefined }))
+          .catch(next);
       })
       .catch(next);
   } else {
