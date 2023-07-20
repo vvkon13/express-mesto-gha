@@ -82,6 +82,9 @@ const errorHandlerCards = (err, req, res, next) => {
       case 'ValidationError':
         res.status(ERROR_CODE_VALIDATION).send({ message: 'Данные карточки не прошли валидацию.' });
         break;
+      case 'Error':
+        res.status(ERROR_CODE_VALIDATION).send({ message: 'Данные карточки не прошли валидацию.' });
+        break;
       default:
         res.status(ERROR_CODE_DEFAULT).send(ERROR_DEFAULT_MESSAGE);
         break;
