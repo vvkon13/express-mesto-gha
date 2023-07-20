@@ -1,4 +1,7 @@
 const router = require('express').Router();
+const {
+  celebrate,
+} = require('celebrate');
 
 const {
   getUsers,
@@ -6,11 +9,12 @@ const {
   getUserMe,
   patchUser,
 } = require('../controllers/users');
+const { USER_VALIDATION_OBJECT } = require('../utils/constants');
 
 router.get('/', getUsers);
 router.get('/:userId', getUser);
 router.get('/me', getUserMe);
-router.patch('/me', patchUser);
-router.patch('/me/avatar', patchUser);
+router.patch('/me', celebrate(USER_VALIDATION_OBJECT), patchUser);
+router.patch('/me/avatar', celebrate(USER_VALIDATION_OBJECT), patchUser);
 
 module.exports = router;

@@ -44,7 +44,9 @@ const createUser = (req, res, next) => {
         req.body.password = hash;
         User.create(req.body)
           .then((user) => res.send(user))
-          .catch(next);
+          .catch((err) => {
+            next(err);
+          });
       })
       .catch(next);
   } else {
@@ -83,13 +85,15 @@ const errorHandlerUsers = (err, req, res, next) => {
   if (res.headersSent) {
     next(err);
   } else {
-    if (err.code === 1100) {
+    if (err.code === 11000) {
       return res.status(ERROR_CODE_DUBLICATE).send({ message: 'Неправильные почта или пароль' });
     }
     switch (err.name) {
       case 'CastError':
         return res.status(ERROR_CODE_VALIDATION).send({ message: 'Переданы некорректные данные пользователя.' });
       case 'ValidationError':
+        return res.status(ERROR_CODE_VALIDATION).send({ message: 'Даные пользователя не прошли валидацию.' });
+      case 'Error':
         return res.status(ERROR_CODE_VALIDATION).send({ message: 'Даные пользователя не прошли валидацию.' });
       default:
         return res.status(ERROR_CODE_DEFAULT).send(ERROR_DEFAULT_MESSAGE);

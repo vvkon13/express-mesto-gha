@@ -24,13 +24,17 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndDelete(cardId)
+  Card.findById(cardId)
     .then((card) => {
       if (card) {
-        res.send(card);
-      } else {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+        if (!card.owner === req.user._id) {
+          return res.status(ERROR_CODE_VALIDATION).send({ message: 'Отсутствуют права на удаление карточки.' });
+        }
+        return Card.findByIdAndDelete(cardId)
+          .then((element) => res.send(element))
+          .catch(next);
       }
+      return res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
     })
     .catch(next);
 };

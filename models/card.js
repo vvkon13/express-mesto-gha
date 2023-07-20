@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const { userSchema } = require('./user');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -11,6 +10,13 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        const regEx = /^https?:\/\/[\w-\.~:/\?#\[\]@!\$&'\(\)\*\+,;=]+$/;
+        return regEx.test(v);
+      },
+      message: 'Ссылка не ссылка!',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
