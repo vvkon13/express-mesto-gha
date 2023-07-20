@@ -20,7 +20,7 @@ app.post('/signup', celebrate(USER_VALIDATION_OBJECT), createUser);
 app.use(auth);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
-app.use(errors);
+app.use(errors());
 app.use('/signin', errorHandlerUsers);
 app.use('/signup', errorHandlerUsers);
 app.use('/users', errorHandlerUsers);
