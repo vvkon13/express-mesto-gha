@@ -2,12 +2,26 @@
   "extends": "airbnb-base",
   "overrides": [
     {
-      "files": ["*.js"],
+      "files": [
+        "*.js"
+      ],
       "rules": {
-        "no-underscore-dangle" : ["error", { "allow": ["_id","._id","._doc"] }],
-        "linebreak-style": ["error", "unix"]
+        "no-underscore-dangle": [
+          "error",
+          {
+            "allow": [
+              "_id",
+              "._id",
+              "_doc",
+              "._doc"
+            ]
+          }
+        ],
+        "linebreak-style": [
+          "error",
+          "unix"
+        ]
       }
     }
   ]
 }
-

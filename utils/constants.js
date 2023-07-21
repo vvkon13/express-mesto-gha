@@ -8,11 +8,12 @@ const ERROR_CODE_DUBLICATE = 409;
 const ERROR_DEFAULT_MESSAGE = 'Произошла ошибка.';
 const PORT = 3000;
 const JWT_SECRET = 'SpartakChampion2024';
+const REG_EX_URL = /^https?:\/\/[\w-\.~:/\?#\[\]@!\$&'\(\)\*\+,;=]+$/;
 const USER_VALIDATION_OBJECT = {
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(REG_EX_URL),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -20,7 +21,7 @@ const USER_VALIDATION_OBJECT = {
 const CARD_VALIDATION_OBJECT = {
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().required().pattern(REG_EX_URL),
     createdAt: Joi.date(),
   }).unknown(true),
 };
@@ -36,4 +37,5 @@ module.exports = {
   JWT_SECRET,
   USER_VALIDATION_OBJECT,
   CARD_VALIDATION_OBJECT,
+  REG_EX_URL,
 };
