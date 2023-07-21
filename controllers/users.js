@@ -71,7 +71,7 @@ const getUser = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  findUserById(req.user, res, next);
+  findUserById(req.user._id, res, next);
 };
 
 const patchUser = (req, res, next) => {
