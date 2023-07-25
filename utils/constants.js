@@ -25,6 +25,15 @@ const CARD_VALIDATION_OBJECT = {
     createdAt: Joi.date(),
   }).unknown(true),
 };
+const USER_VALIDATION_OBJECT_NOT_REQUIRED = {
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(REG_EX_URL),
+    email: Joi.string().email(),
+    password: Joi.string(),
+  }),
+};
 
 module.exports = {
   ERROR_CODE_VALIDATION,
@@ -36,6 +45,7 @@ module.exports = {
   PORT,
   JWT_SECRET,
   USER_VALIDATION_OBJECT,
+  USER_VALIDATION_OBJECT_NOT_REQUIRED,
   CARD_VALIDATION_OBJECT,
   REG_EX_URL,
 };
