@@ -13,11 +13,13 @@ const {
 } = require('../utils/constants');
 
 const login = (req, res, next) => {
-  const { email, password, _id } = req.body;
+  const { email, password } = req.body;
+  let _id;
   if (!validator.isEmail(email)) return res.status(ERROR_CODE_INCORRECT_EMAIL_PASSWORD).send({ message: 'Неправильные почта или пароль' });
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) return res.status(ERROR_CODE_INCORRECT_EMAIL_PASSWORD).send({ message: 'Неправильные почта или пароль' });
+      _id = user._id;
       return bcrypt.compare(password, user.password);
     })
     .then((isValidPassword) => {
