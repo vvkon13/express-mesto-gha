@@ -23,7 +23,7 @@ const login = (req, res, next) => {
     .then((isValidPassword) => {
       if (!isValidPassword) return res.status(ERROR_CODE_INCORRECT_EMAIL_PASSWORD).send({ message: 'Неправильные почта или пароль' });
       const token = jwt.sign({ _id }, JWT_SECRET, { expiresIn: '7d' });
-      return res.status(200).send({ jwt: token });
+      return res.status(200).send({ token });
     })
     .catch(next);
   return undefined;
