@@ -1,6 +1,10 @@
 const Card = require('../models/card');
 const {
-  ERROR_CODE_VALIDATION, ERROR_CODE_DEFAULT, ERROR_DEFAULT_MESSAGE, ERROR_CODE_NOT_FOUND,
+  ERROR_CODE_VALIDATION,
+  ERROR_CODE_DEFAULT,
+  ERROR_DEFAULT_MESSAGE,
+  ERROR_CODE_NOT_FOUND,
+  ERROR_CODE_ALIEN,
 } = require('../utils/constants');
 
 const getCards = (req, res, next) => {
@@ -28,7 +32,7 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (card) {
         if (card.owner.toString() !== req.user._id) {
-          return res.status(ERROR_CODE_VALIDATION).send({ message: 'Отсутствуют права на удаление карточки.' });
+          return res.status(ERROR_CODE_ALIEN).send({ message: 'Отсутствуют права на удаление карточки.' });
         }
         return Card.findByIdAndDelete(cardId)
           .then((element) => res.send(element))
