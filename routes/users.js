@@ -14,7 +14,7 @@ const { USER_VALIDATION_OBJECT } = require('../utils/constants');
 router.get('/', getUsers);
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.number(),
+    userId: Joi.string().token(),
   }).unknown(true),
 }), getUser);
 router.get('/me', getUserMe);
