@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 const { User } = require('../models/user');
 const {
   SUCCESS_CREATING_RESOURCE_CODE,
@@ -23,6 +24,10 @@ const errorHandlerUsers = (err) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
   let _id;
+  if (!validator.isEmail(email)) {
+    const e = new IncorrectEmailPasswordError('Неправильные почта или пароль');
+    next(e);
+  }
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
@@ -54,7 +59,11 @@ const getUsers = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const { password } = req.body;
+  const { email, password } = req.body;
+  if (!validator.isEmail(email)) {
+    const e = new IncorrectEmailPasswordError('Неправильные почта или пароль');
+    next(e);
+  }
   bcrypt.hash(password, 10)
     .then((hash) => {
       req.body.password = hash;
