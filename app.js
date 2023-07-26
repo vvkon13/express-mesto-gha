@@ -7,11 +7,10 @@ const {
 } = require('celebrate');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
-const { errorHandlerUsers } = require('./controllers/users');
-const { errorHandlerCards } = require('./controllers/cards');
 const { login, createUser } = require('./controllers/users');
 const { PORT, ERROR_CODE_NOT_FOUND, USER_VALIDATION_OBJECT } = require('./utils/constants');
 const auth = require('./middlewares/auth');
+const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 app.use(bodyParser.json());
@@ -21,10 +20,7 @@ app.use(auth);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 app.use(errors());
-app.use('/signin', errorHandlerUsers);
-app.use('/signup', errorHandlerUsers);
-app.use('/users', errorHandlerUsers);
-app.use('/cards', errorHandlerCards);
+app.use(errorHandler);
 app.use((req, res) => {
   res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Путь не существует' });
 });
