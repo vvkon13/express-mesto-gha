@@ -6,10 +6,11 @@ const ERROR_CODE_NOT_FOUND = 404;
 const ERROR_CODE_ALIEN = 403;
 const ERROR_CODE_INCORRECT_EMAIL_PASSWORD = 401;
 const ERROR_CODE_DUBLICATE = 409;
+const SUCCESS_CREATING_RESOURCE_CODE = 201;
 const ERROR_DEFAULT_MESSAGE = 'Произошла ошибка.';
 const PORT = 3000;
 const JWT_SECRET = 'SpartakChampion2024';
-const REG_EX_URL = /^https?:\/\/[\w-\.~:/\?#\[\]@!\$&'\(\)\*\+,;=]+$/;
+const REG_EX_URL = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 const USER_VALIDATION_OBJECT = {
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
@@ -44,6 +45,7 @@ module.exports = {
   ERROR_CODE_DUBLICATE,
   ERROR_DEFAULT_MESSAGE,
   ERROR_CODE_ALIEN,
+  SUCCESS_CREATING_RESOURCE_CODE,
   PORT,
   JWT_SECRET,
   USER_VALIDATION_OBJECT,

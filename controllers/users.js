@@ -9,6 +9,7 @@ const {
   ERROR_CODE_DUBLICATE,
   ERROR_CODE_INCORRECT_EMAIL_PASSWORD,
   ERROR_DEFAULT_MESSAGE,
+  SUCCESS_CREATING_RESOURCE_CODE,
   JWT_SECRET,
 } = require('../utils/constants');
 
@@ -46,7 +47,8 @@ const createUser = (req, res, next) => {
       .then((hash) => {
         req.body.password = hash;
         User.create(req.body)
-          .then((user) => res.send({ ...user._doc, password: undefined }))
+          .then((user) => res.status(SUCCESS_CREATING_RESOURCE_CODE)
+            .send({ ...user._doc, password: undefined }))
           .catch(next);
       })
       .catch(next);

@@ -5,6 +5,7 @@ const {
   ERROR_DEFAULT_MESSAGE,
   ERROR_CODE_NOT_FOUND,
   ERROR_CODE_ALIEN,
+  SUCCESS_CREATING_RESOURCE_CODE,
 } = require('../utils/constants');
 
 const getCards = (req, res, next) => {
@@ -22,7 +23,7 @@ const createCard = (req, res, next) => {
   Card.create({
     name, link, owner, likes,
   })
-    .then((card) => res.send(card))
+    .then((card) => res.status(SUCCESS_CREATING_RESOURCE_CODE).send(card))
     .catch(next);
 };
 
@@ -34,7 +35,7 @@ const deleteCard = (req, res, next) => {
         if (card.owner.toString() !== req.user._id) {
           return res.status(ERROR_CODE_ALIEN).send({ message: 'Отсутствуют права на удаление карточки.' });
         }
-        return Card.findByIdAndDelete(cardId)
+        return Card.deleteOne(card)
           .then((element) => res.send(element))
           .catch(next);
       }
