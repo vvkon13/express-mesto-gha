@@ -34,7 +34,7 @@ const login = (req, res, next) => {
         throw new IncorrectEmailPasswordError('Неправильные почта или пароль');
       }
       _id = user._id;
-      bcrypt.compare(password, user.password);
+      return bcrypt.compare(password, user.password);
     })
     .then((isValidPassword) => {
       if (!isValidPassword) {
