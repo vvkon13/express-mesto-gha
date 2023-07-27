@@ -15,7 +15,7 @@ const errorHandlerUsers = (err) => {
   if (err.code === 11000) {
     return new DublicateError('Неправильные почта или пароль');
   }
-  if (err.name === 'CastError' || err.name === 'ValidationError' || err.name === 'Error') {
+  if (err.name === 'CastError' || err.name === 'ValidationError') {
     return new ValidationError('Даные пользователя не прошли валидацию.');
   }
   return err;
