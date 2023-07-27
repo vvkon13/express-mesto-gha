@@ -25,8 +25,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   let _id;
   if (!validator.isEmail(email)) {
-    const e = new IncorrectEmailPasswordError('Неправильные почта или пароль');
-    next(e);
+    next(new IncorrectEmailPasswordError('Неправильные почта или пароль'));
   }
   User.findOne({ email }).select('+password')
     .then((user) => {
@@ -61,8 +60,7 @@ const getUsers = (req, res, next) => {
 const createUser = (req, res, next) => {
   const { email, password } = req.body;
   if (!validator.isEmail(email)) {
-    const e = new IncorrectEmailPasswordError('Неправильные почта или пароль');
-    next(e);
+    next(new IncorrectEmailPasswordError('Неправильные почта или пароль'));
   }
   bcrypt.hash(password, 10)
     .then((hash) => {
