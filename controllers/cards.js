@@ -1,19 +1,27 @@
 const Card = require('../models/card');
 const {
-  ERROR_CODE_VALIDATION,
-  ERROR_CODE_DEFAULT,
-  ERROR_DEFAULT_MESSAGE,
-  ERROR_CODE_NOT_FOUND,
-  ERROR_CODE_ALIEN,
   SUCCESS_CREATING_RESOURCE_CODE,
 } = require('../utils/constants');
+
+const ValidationError = require('../errors/ValidationErr');
+const AlienError = require('../errors/AlienErr');
+const NotFoundError = require('../errors/NotFoundErr');
+
+const errorHandlerCards = (err) => {
+  if (err.name === 'CastError' || err.name === 'ValidationError') {
+    return new ValidationError('Данные карточки не прошли валидацию.');
+  }
+  return err;
+};
 
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
-      res.send(cards);
+      res.status(200).send(cards);
     })
-    .catch(next);
+    .catch((err) => {
+      next(errorHandlerCards(err));
+    });
 };
 
 const createCard = (req, res, next) => {
@@ -24,7 +32,9 @@ const createCard = (req, res, next) => {
     name, link, owner, likes,
   })
     .then((card) => res.status(SUCCESS_CREATING_RESOURCE_CODE).send(card))
-    .catch(next);
+    .catch((err) => {
+      next(errorHandlerCards(err));
+    });
 };
 
 const deleteCard = (req, res, next) => {
@@ -33,15 +43,19 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (card) {
         if (card.owner.toString() !== req.user._id) {
-          return res.status(ERROR_CODE_ALIEN).send({ message: 'Отсутствуют права на удаление карточки.' });
+          throw new AlienError('Отсутствуют права на удаление карточки.');
         }
         return Card.deleteOne(card)
           .then((element) => res.send(element))
-          .catch(next);
+          .catch((err) => {
+            next(errorHandlerCards(err));
+          });
       }
-      return res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+      throw new NotFoundError('Карточка с указанным ID не найдена.');
     })
-    .catch(next);
+    .catch((err) => {
+      next(errorHandlerCards(err));
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -54,10 +68,12 @@ const likeCard = (req, res, next) => {
       if (card) {
         res.send(card);
       } else {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+        throw new NotFoundError('Карточка с указанным ID не найдена.');
       }
     })
-    .catch(next);
+    .catch((err) => {
+      next(errorHandlerCards(err));
+    });
 };
 
 const dislikeCard = (req, res, next) => {
@@ -70,31 +86,12 @@ const dislikeCard = (req, res, next) => {
       if (card) {
         res.send(card);
       } else {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным ID не найдена.' });
+        throw new NotFoundError('Карточка с указанным ID не найдена.');
       }
     })
-    .catch(next);
-};
-
-const errorHandlerCards = (err, req, res, next) => {
-  if (res.headersSent) {
-    next(err);
-  } else {
-    switch (err.name) {
-      case 'CastError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Переданы некорректные данные. ' });
-        break;
-      case 'ValidationError':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Данные карточки не прошли валидацию.' });
-        break;
-      case 'Error':
-        res.status(ERROR_CODE_VALIDATION).send({ message: 'Данные карточки не прошли валидацию.' });
-        break;
-      default:
-        res.status(ERROR_CODE_DEFAULT).send(ERROR_DEFAULT_MESSAGE);
-        break;
-    }
-  }
+    .catch((err) => {
+      next(errorHandlerCards(err));
+    });
 };
 
 module.exports = {
